@@ -25,13 +25,13 @@
       "id": "D1",
       "lib_id": "Device:D_TVS",
       "value": "SMBJ12A",
-      "footprint": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
+      "footprint": "Diode_SMD:D_SMB_Handsoldering"
     },
     {
       "id": "D2",
       "lib_id": "Device:D_TVS",
       "value": "SMBJ5.0A",
-      "footprint": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
+      "footprint": "Diode_SMD:D_SMB_Handsoldering"
     },
     {
       "id": "C1",
@@ -75,7 +75,7 @@
     },
     {
       "id": "U1",
-      "lib_id": "MCU_Microchip_ATmega:ATmega48PV-10P",
+      "lib_id": "MCU_Microchip_ATmega:ATmega328P-P",
       "value": "ATmega328P-PU",
       "footprint": "Package_DIP:DIP-28_W7.62mm_Socket"
     },
@@ -112,13 +112,13 @@
       "id": "J2",
       "lib_id": "Connector_Generic:Conn_01x03",
       "value": "FAN0",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
+      "footprint": "Connector:FanPinHeader_1x03_P2.54mm_Vertical"
     },
     {
       "id": "J3",
       "lib_id": "Connector_Generic:Conn_01x03",
       "value": "FAN1",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
+      "footprint": "Connector:FanPinHeader_1x03_P2.54mm_Vertical"
     },
     {
       "id": "J4",
@@ -172,13 +172,15 @@
       "id": "TH1",
       "lib_id": "Device:Thermistor_NTC",
       "value": "10k NTC",
-      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+      "in_bom": false,
+      "on_board": false
     },
     {
       "id": "TH2",
       "lib_id": "Device:Thermistor_NTC",
       "value": "10k NTC",
-      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+      "in_bom": false,
+      "on_board": false
     },
     {
       "id": "R4",

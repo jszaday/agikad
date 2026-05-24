@@ -134,8 +134,8 @@ Symbols verified or used:
 
 - `Interface_UART:MAX3232` — use directly; emitter handles inherited symbol correctly.
 - `Interface_UART:MAX232` — base symbol for MAX3232; no longer needed as a workaround.
-- `MCU_Microchip_ATmega:ATmega48PV-10P` — use directly for ATmega328P-PU DIP-28 pin geometry (non-inherited base).
-- `MCU_Microchip_ATmega:ATmega328P-P` — inherited; can now be used directly.
+- `MCU_Microchip_ATmega:ATmega328P-P` — inherited; use directly for ATmega328P-PU DIP-28. Pin numbers confirmed: 1=RESET, 2=PD0/RX, 3=PD1/TX, 7=VCC, 8=GND, 9=XTAL1, 10=XTAL2, 15=PB1/OC1A, 16=PB2/OC1B, 17=PB3/MOSI, 18=PB4/MISO, 19=PB5/SCK, 20=AVCC, 21=AREF, 22=GND, 23=PC0/ADC0, 24=PC1/ADC1.
+- `MCU_Microchip_ATmega:ATmega48PV-10P` — non-inherited base; no longer needed as ATmega328P-P workaround.
 - `Transistor_FET:IRLZ44N` — inherited; can now be used directly.
 - `Transistor_FET:BUZ11` — base symbol for IRLZ44N; no longer needed as a workaround.
 - `Device:Thermistor_NTC`
