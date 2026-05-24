@@ -6,6 +6,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+from .emitters.skidl import emit_skidl_script, run_skidl_script
 from .footprints import index_footprints, list_footprint_libraries, search_footprints
 from .graph import build_graph, validate_semantics
 from .kicad import discover_kicad
@@ -29,6 +30,12 @@ def main(argv: list[str] | None = None) -> int:
     normalize = sub.add_parser("normalize")
     normalize.add_argument("spec", type=Path)
     normalize.add_argument("--output", "-o", type=Path)
+
+    emit_skidl = sub.add_parser("emit-skidl")
+    emit_skidl.add_argument("spec", type=Path)
+    emit_skidl.add_argument("--output", "-o", type=Path, required=True)
+    emit_skidl.add_argument("--netlist-output", type=Path)
+    emit_skidl.add_argument("--run", action="store_true")
 
     inspect = sub.add_parser("inspect-symbol")
     inspect.add_argument("lib_id")
@@ -58,6 +65,8 @@ def main(argv: list[str] | None = None) -> int:
         return _validate(args.spec)
     if args.command == "normalize":
         return _normalize(args.spec, args.output)
+    if args.command == "emit-skidl":
+        return _emit_skidl(args.spec, args.output, args.netlist_output, args.run)
     if args.command == "inspect-symbol":
         return _inspect_symbol(args.lib_id)
     if args.command == "list-symbol-libraries":
@@ -102,6 +111,34 @@ def _normalize(path: Path, output: Path | None) -> int:
     else:
         print(payload)
     return 0
+
+
+def _emit_skidl(
+    path: Path, output: Path, netlist_output: Path | None, run: bool
+) -> int:
+    errors, graph = _validate_and_graph(path)
+    if errors:
+        for error in errors:
+            print(error, file=sys.stderr)
+        return 1
+    assert graph is not None
+    env = discover_kicad()
+    emit_skidl_script(
+        graph,
+        output,
+        netlist_output=netlist_output,
+        symbols_dir=env.symbols_dir,
+        footprints_dir=env.footprints_dir,
+    )
+    print(str(output))
+    if not run:
+        return 0
+    proc = run_skidl_script(output)
+    if proc.stdout:
+        print(proc.stdout, end="")
+    if proc.stderr:
+        print(proc.stderr, file=sys.stderr, end="")
+    return proc.returncode
 
 
 def _inspect_symbol(lib_id: str) -> int:

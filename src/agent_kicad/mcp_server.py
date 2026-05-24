@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict
+from pathlib import Path
 
+from .emitters.skidl import emit_skidl_script as write_skidl_file
+from .emitters.skidl import render_skidl_script
 from .footprints import (
     index_footprints,
     list_footprint_libraries as available_footprint_libraries,
@@ -46,6 +49,37 @@ def main() -> None:
             return {"ok": False, "errors": errors}
         assert graph is not None
         return {"ok": True, "graph": graph.to_dict()}
+
+    @mcp.tool()
+    def emit_skidl_script(spec_json: str) -> dict[str, object]:
+        """Render a SKiDL Python script for a validated connection spec."""
+        errors, graph = _validate_json(spec_json)
+        if errors:
+            return {"ok": False, "errors": errors}
+        assert graph is not None
+        env = discover_kicad()
+        return {
+            "ok": True,
+            "script": render_skidl_script(
+                graph, symbols_dir=env.symbols_dir, footprints_dir=env.footprints_dir
+            ),
+        }
+
+    @mcp.tool()
+    def write_skidl_script(spec_json: str, output_path: str) -> dict[str, object]:
+        """Write a SKiDL Python script to a local path."""
+        errors, graph = _validate_json(spec_json)
+        if errors:
+            return {"ok": False, "errors": errors}
+        assert graph is not None
+        env = discover_kicad()
+        output = write_skidl_file(
+            graph,
+            Path(output_path),
+            symbols_dir=env.symbols_dir,
+            footprints_dir=env.footprints_dir,
+        )
+        return {"ok": True, "path": str(output)}
 
     @mcp.tool()
     def inspect_symbol(lib_id: str) -> dict[str, object]:
