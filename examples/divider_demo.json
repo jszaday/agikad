@@ -1,0 +1,50 @@
+{
+  "version": "0.1",
+  "project": {
+    "name": "divider_demo",
+    "target_kicad_version": "10.0.1"
+  },
+  "components": [
+    {
+      "id": "J1",
+      "lib_id": "Connector_Generic:Conn_01x03",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
+    },
+    {
+      "id": "R1",
+      "lib_id": "Device:R",
+      "value": "10k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric"
+    },
+    {
+      "id": "R2",
+      "lib_id": "Device:R",
+      "value": "20k",
+      "footprint": "Resistor_SMD:R_0603_1608Metric"
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN",
+      "connections": [
+        { "component": "J1", "pin_number": "1" },
+        { "component": "R1", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "VOUT",
+      "connections": [
+        { "component": "J1", "pin_number": "2" },
+        { "component": "R1", "pin_number": "2" },
+        { "component": "R2", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "GND",
+      "connections": [
+        { "component": "J1", "pin_number": "3" },
+        { "component": "R2", "pin_number": "2" }
+      ]
+    }
+  ]
+}

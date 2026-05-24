@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KiCadConnectionSpec",
+  "type": "object",
+  "required": ["version", "project", "components", "nets"],
+  "properties": {
+    "version": { "type": "string", "const": "0.1" },
+    "project": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "target_kicad_version": { "type": ["string", "null"] },
+        "root_sheet": { "type": "string", "default": "root" },
+        "library_policy": {
+          "type": "string",
+          "enum": ["project-local", "global-ok"],
+          "default": "project-local"
+        }
+      },
+      "additionalProperties": false
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "lib_id"],
+        "properties": {
+          "id": { "type": "string" },
+          "lib_id": { "type": "string" },
+          "value": { "type": "string" },
+          "footprint": { "type": "string" },
+          "unit": { "type": "integer", "minimum": 1, "default": 1 },
+          "sheet": { "type": "string", "default": "root" },
+          "in_bom": { "type": "boolean", "default": true },
+          "on_board": { "type": "boolean", "default": true },
+          "fields": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "pin_aliases": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "placement_hint": {
+            "type": "object",
+            "properties": {
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "rotation": { "type": "number" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "nets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "connections"],
+        "properties": {
+          "name": { "type": "string" },
+          "scope": {
+            "type": "string",
+            "enum": ["local", "global", "hierarchical"],
+            "default": "local"
+          },
+          "power": { "type": "boolean", "default": false },
+          "label_shape": {
+            "type": "string",
+            "enum": ["input", "output", "bidirectional", "tri_state", "passive"],
+            "default": "passive"
+          },
+          "sheet": { "type": "string", "default": "root" },
+          "connections": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": ["component"],
+              "properties": {
+                "component": { "type": "string" },
+                "pin_number": { "type": "string" },
+                "pin_name": { "type": "string" },
+                "unit": { "type": "integer", "minimum": 1 }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "sheets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "parent": { "type": ["string", "null"] },
+          "filename": { "type": "string" },
+          "interfaces": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": { "type": "string" },
+                "shape": {
+                  "type": "string",
+                  "enum": ["input", "output", "bidirectional", "tri_state", "passive"],
+                  "default": "passive"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

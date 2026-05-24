@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-kicad"
+version = "0.1.0"
+description = "Agent-oriented KiCad schematic generation and validation tools."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.9"]
+skidl = ["skidl>=2.0"]
+kicad-sch = ["kicad-sch-api"]
+
+[project.scripts]
+agent-kicad = "agent_kicad.cli:main"
+agent-kicad-mcp = "agent_kicad.mcp_server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent_kicad"]
