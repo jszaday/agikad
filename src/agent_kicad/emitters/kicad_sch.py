@@ -28,7 +28,7 @@ class SymbolBundle:
     lib_id: str
     library: str
     name: str
-    embedded_text: str
+    embedded_texts: list[str]
     pins: dict[str, PinGeometry]
 
 
@@ -79,7 +79,8 @@ def _render_schematic(graph: CircuitGraph, bundles: dict[str, SymbolBundle]) -> 
         "  (lib_symbols",
     ]
     for lib_id in sorted({component.lib_id for component in graph.components}):
-        lines.extend(_indent(bundles[lib_id].embedded_text, 4))
+        for embedded_text in bundles[lib_id].embedded_texts:
+            lines.extend(_indent(embedded_text, 4))
     lines.append("  )")
 
     placements = _component_placements(graph)
@@ -105,6 +106,11 @@ def _render_schematic(graph: CircuitGraph, bundles: dict[str, SymbolBundle]) -> 
                     graph, net.name, pin.component, pin.pin_number, index, pin_xy
                 )
             )
+
+    for pin in graph.no_connects:
+        component_xy = placements[pin.component]
+        pin_xy = _absolute_pin(component_xy, bundles[pin.lib_id].pins[pin.pin_number])
+        lines.extend(_render_no_connect(graph, pin.component, pin.pin_number, pin_xy))
 
     lines.append(")")
     return "\n".join(lines)
@@ -200,6 +206,20 @@ def _render_global_label(
     ]
 
 
+def _render_no_connect(
+    graph: CircuitGraph,
+    component_id: str,
+    pin_number: str,
+    xy: tuple[float, float],
+) -> list[str]:
+    x, y = xy
+    return [
+        "  (no_connect",
+        f"    (at {_fmt(x)} {_fmt(y)})",
+        f"    (uuid {_stable_uuid(graph.project.name, 'no_connect', component_id, pin_number)}))",
+    ]
+
+
 def _load_symbol_bundles(
     graph: CircuitGraph, symbols_dir: Path
 ) -> dict[str, SymbolBundle]:
@@ -208,22 +228,88 @@ def _load_symbol_bundles(
         library, name = lib_id.split(":", 1)
         path = symbols_dir / f"{library}.kicad_sym"
         text = path.read_text(encoding="utf-8")
-        block = _extract_symbol_block(text, name)
-        embedded = re.sub(
-            r'^(\s*\(symbol\s+)"[^"]+"',
-            rf'\1"{lib_id}"',
-            block,
-            count=1,
-        )
-        expr = _find_symbol_expr(parse_sexpr(text), name)
+        parsed = parse_sexpr(text)
+        root = parsed[0]
+        exprs = _symbol_exprs(root)
+        expr = _resolve_symbol_expr(exprs[name], exprs)
+        embedded_texts = [
+            _symbol_block_for_lib_symbols(
+                text, _base_symbol_name(name, exprs), lib_id, name
+            )
+        ]
         bundles[lib_id] = SymbolBundle(
             lib_id=lib_id,
             library=library,
             name=name,
-            embedded_text=embedded,
+            embedded_texts=embedded_texts,
             pins=_pin_geometries(expr),
         )
     return bundles
+
+
+def _symbol_block_for_lib_symbols(
+    text: str, symbol_name: str, lib_id: str | None, nested_name: str | None = None
+) -> str:
+    block = _extract_symbol_block(text, symbol_name)
+    if lib_id is None:
+        return block
+    block = re.sub(
+        r'^(\s*\(symbol\s+)"[^"]+"',
+        rf'\1"{lib_id}"',
+        block,
+        count=1,
+    )
+    if nested_name and nested_name != symbol_name:
+        block = re.sub(
+            rf'(\(symbol\s+)"{re.escape(symbol_name)}([^"]*)"',
+            rf'\1"{nested_name}\2"',
+            block,
+        )
+    return block
+
+
+def _symbol_exprs(root: list[SExpr]) -> dict[str, list[SExpr]]:
+    exprs: dict[str, list[SExpr]] = {}
+    for expr in children(root, "symbol"):
+        if len(expr) > 1 and isinstance(expr[1], str):
+            exprs[expr[1]] = expr
+    return exprs
+
+
+def _base_symbol_name(symbol_name: str, symbol_exprs: dict[str, list[SExpr]]) -> str:
+    current = symbol_name
+    seen: set[str] = set()
+    while current not in seen and current in symbol_exprs:
+        seen.add(current)
+        parent = _extends_name(symbol_exprs[current])
+        if parent is None:
+            break
+        current = parent
+    return current
+
+
+def _resolve_symbol_expr(
+    expr: list[SExpr],
+    symbol_exprs: dict[str, list[SExpr]],
+    seen: set[str] | None = None,
+) -> list[SExpr]:
+    seen = seen or set()
+    parent_name = _extends_name(expr)
+    if parent_name is None:
+        return expr
+    if parent_name in seen or parent_name not in symbol_exprs:
+        return expr
+    parent = _resolve_symbol_expr(
+        symbol_exprs[parent_name], symbol_exprs, seen | {parent_name}
+    )
+    return [*parent, *expr[2:]]
+
+
+def _extends_name(symbol: list[SExpr]) -> str | None:
+    child = first_child(symbol, "extends")
+    if child and len(child) > 1 and isinstance(child[1], str):
+        return child[1]
+    return None
 
 
 def _extract_symbol_block(text: str, symbol_name: str) -> str:
@@ -253,14 +339,6 @@ def _extract_symbol_block(text: str, symbol_name: str) -> str:
             if depth == 0:
                 return text[start : index + 1]
     raise ValueError(f"unclosed symbol block: {symbol_name}")
-
-
-def _find_symbol_expr(parsed: list[SExpr], symbol_name: str) -> list[SExpr]:
-    root = parsed[0]
-    for expr in children(root, "symbol"):
-        if len(expr) > 1 and expr[1] == symbol_name:
-            return expr
-    raise ValueError(f"symbol not found: {symbol_name}")
 
 
 def _pin_geometries(symbol: list[SExpr]) -> dict[str, PinGeometry]:
@@ -309,7 +387,7 @@ def _component_placements(graph: CircuitGraph) -> dict[str, tuple[float, float]]
 def _absolute_pin(
     component_xy: tuple[float, float], pin: PinGeometry
 ) -> tuple[float, float]:
-    return (component_xy[0] + pin.x, component_xy[1] + pin.y)
+    return (component_xy[0] + pin.x, component_xy[1] - pin.y)
 
 
 def _indent(text: str, spaces: int) -> list[str]:

@@ -48,6 +48,18 @@ def validate_semantics(
             if key in seen_on_net:
                 errors.append(f"{net.name}: duplicate connection to {conn.component}")
             seen_on_net.add(key)
+    for conn in spec.no_connects:
+        component = components.get(conn.component)
+        if component is None:
+            errors.append(f"no_connects: unknown component {conn.component}")
+            continue
+        symbol = symbol_index.get(component.lib_id)
+        if symbol is None:
+            continue
+        _pin, pin_errors = resolve_pin(
+            symbol, conn.pin_number, conn.pin_name, conn.unit or component.unit
+        )
+        errors.extend(f"no_connects/{component.id}: {error}" for error in pin_errors)
     return errors
 
 
@@ -86,8 +98,31 @@ def build_graph(
                 connections=resolved,
             )
         )
+    no_connects: list[ResolvedPin] = []
+    for conn in spec.no_connects:
+        component = components[conn.component]
+        symbol = symbol_index[component.lib_id]
+        pin, errors = resolve_pin(
+            symbol, conn.pin_number, conn.pin_name, conn.unit or component.unit
+        )
+        if pin is None:
+            raise ValueError("; ".join(errors))
+        no_connects.append(
+            ResolvedPin(
+                component=component.id,
+                lib_id=component.lib_id,
+                unit=pin.unit,
+                pin_number=pin.number,
+                pin_name=pin.name,
+                pin_type=pin.type,
+            )
+        )
     return CircuitGraph(
-        project=spec.project, components=spec.components, nets=nets, sheets=spec.sheets
+        project=spec.project,
+        components=spec.components,
+        nets=nets,
+        sheets=spec.sheets,
+        no_connects=no_connects,
     )
 
 

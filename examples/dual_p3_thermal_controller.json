@@ -1,0 +1,636 @@
+{
+  "version": "0.1",
+  "project": {
+    "name": "dual_p3_thermal_controller",
+    "target_kicad_version": "10.0.1"
+  },
+  "components": [
+    {
+      "id": "J1",
+      "lib_id": "Connector_Generic:Conn_01x04",
+      "value": "PC_Molex_Power",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical"
+    },
+    {
+      "id": "F1",
+      "lib_id": "Device:Polyfuse",
+      "value": "1.5A"
+    },
+    {
+      "id": "F2",
+      "lib_id": "Device:Polyfuse",
+      "value": "500mA"
+    },
+    {
+      "id": "D1",
+      "lib_id": "Device:D_TVS",
+      "value": "SMBJ12A",
+      "footprint": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
+    },
+    {
+      "id": "D2",
+      "lib_id": "Device:D_TVS",
+      "value": "SMBJ5.0A",
+      "footprint": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
+    },
+    {
+      "id": "C1",
+      "lib_id": "Device:C_Polarized",
+      "value": "100uF",
+      "footprint": "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm"
+    },
+    {
+      "id": "C2",
+      "lib_id": "Device:C_Polarized",
+      "value": "47uF",
+      "footprint": "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm"
+    },
+    {
+      "id": "PWR1",
+      "lib_id": "power:PWR_FLAG",
+      "value": "PWR_FLAG",
+      "in_bom": false,
+      "on_board": false
+    },
+    {
+      "id": "PWR2",
+      "lib_id": "power:PWR_FLAG",
+      "value": "PWR_FLAG",
+      "in_bom": false,
+      "on_board": false
+    },
+    {
+      "id": "PWR3",
+      "lib_id": "power:PWR_FLAG",
+      "value": "PWR_FLAG",
+      "in_bom": false,
+      "on_board": false
+    },
+    {
+      "id": "PWR4",
+      "lib_id": "power:PWR_FLAG",
+      "value": "PWR_FLAG",
+      "in_bom": false,
+      "on_board": false
+    },
+    {
+      "id": "U1",
+      "lib_id": "MCU_Microchip_ATmega:ATmega48PV-10P",
+      "value": "ATmega328P-PU",
+      "footprint": "Package_DIP:DIP-28_W7.62mm_Socket"
+    },
+    {
+      "id": "FB1",
+      "lib_id": "Device:FerriteBead",
+      "value": "10uH"
+    },
+    {
+      "id": "Y1",
+      "lib_id": "Device:Crystal",
+      "value": "16MHz",
+      "footprint": "Crystal:Crystal_HC49-4H_Vertical"
+    },
+    {
+      "id": "U2",
+      "lib_id": "Interface_UART:MAX232",
+      "value": "MAX3232",
+      "footprint": "Package_DIP:DIP-16_W7.62mm_Socket"
+    },
+    {
+      "id": "Q1",
+      "lib_id": "Transistor_FET:BUZ11",
+      "value": "IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical"
+    },
+    {
+      "id": "Q2",
+      "lib_id": "Transistor_FET:BUZ11",
+      "value": "IRLZ44N",
+      "footprint": "Package_TO_SOT_THT:TO-220-3_Vertical"
+    },
+    {
+      "id": "J2",
+      "lib_id": "Connector_Generic:Conn_01x03",
+      "value": "FAN0",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
+    },
+    {
+      "id": "J3",
+      "lib_id": "Connector_Generic:Conn_01x03",
+      "value": "FAN1",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
+    },
+    {
+      "id": "J4",
+      "lib_id": "Connector_Generic:Conn_01x02",
+      "value": "CPU0_NTC",
+      "footprint": "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical"
+    },
+    {
+      "id": "J5",
+      "lib_id": "Connector_Generic:Conn_01x02",
+      "value": "CPU1_NTC",
+      "footprint": "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical"
+    },
+    {
+      "id": "J6",
+      "lib_id": "Connector_Generic:Conn_01x03",
+      "value": "RS232",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
+    },
+    {
+      "id": "J7",
+      "lib_id": "Connector_Generic:Conn_02x03_Odd_Even",
+      "value": "AVR_ISP",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical"
+    },
+    {
+      "id": "J8",
+      "lib_id": "Connector_Generic:Conn_01x06",
+      "value": "FTDI",
+      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
+    },
+    {
+      "id": "R1",
+      "lib_id": "Device:R",
+      "value": "10k",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "R2",
+      "lib_id": "Device:R",
+      "value": "10k",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "R3",
+      "lib_id": "Device:R",
+      "value": "10k",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "TH1",
+      "lib_id": "Device:Thermistor_NTC",
+      "value": "10k NTC",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "TH2",
+      "lib_id": "Device:Thermistor_NTC",
+      "value": "10k NTC",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "R4",
+      "lib_id": "Device:R",
+      "value": "100R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "R5",
+      "lib_id": "Device:R",
+      "value": "100R",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "R6",
+      "lib_id": "Device:R",
+      "value": "10k",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "R7",
+      "lib_id": "Device:R",
+      "value": "10k",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "R8",
+      "lib_id": "Device:R",
+      "value": "1k",
+      "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+    },
+    {
+      "id": "D3",
+      "lib_id": "Device:D_Schottky",
+      "value": "1N5819",
+      "footprint": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
+    },
+    {
+      "id": "D4",
+      "lib_id": "Device:D_Schottky",
+      "value": "1N5819",
+      "footprint": "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal"
+    },
+    {
+      "id": "D5",
+      "lib_id": "Device:LED",
+      "value": "STATUS",
+      "footprint": "LED_THT:LED_D5.0mm"
+    },
+    {
+      "id": "C3",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C4",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C5",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C6",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C7",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C8",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C9",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C10",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C11",
+      "lib_id": "Device:C",
+      "value": "10nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C12",
+      "lib_id": "Device:C",
+      "value": "10nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C13",
+      "lib_id": "Device:C",
+      "value": "100nF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C14",
+      "lib_id": "Device:C",
+      "value": "22pF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    },
+    {
+      "id": "C15",
+      "lib_id": "Device:C",
+      "value": "22pF",
+      "footprint": "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P2.50mm"
+    }
+  ],
+  "nets": [
+    {
+      "name": "+12VIN",
+      "power": true,
+      "connections": [
+        { "component": "J1", "pin_number": "1" },
+        { "component": "F1", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "+12V",
+      "power": true,
+      "connections": [
+        { "component": "F1", "pin_number": "2" },
+        { "component": "D1", "pin_number": "1" },
+        { "component": "PWR1", "pin_number": "1" },
+        { "component": "C1", "pin_number": "1" },
+        { "component": "J2", "pin_number": "2" },
+        { "component": "J3", "pin_number": "2" },
+        { "component": "D3", "pin_number": "1" },
+        { "component": "D4", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "+5VIN",
+      "power": true,
+      "connections": [
+        { "component": "J1", "pin_number": "4" },
+        { "component": "F2", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "+5V",
+      "power": true,
+      "connections": [
+        { "component": "F2", "pin_number": "2" },
+        { "component": "D2", "pin_number": "1" },
+        { "component": "PWR2", "pin_number": "1" },
+        { "component": "C2", "pin_number": "1" },
+        { "component": "U1", "pin_number": "7" },
+        { "component": "FB1", "pin_number": "1" },
+        { "component": "R1", "pin_number": "1" },
+        { "component": "R2", "pin_number": "1" },
+        { "component": "R3", "pin_number": "1" },
+        { "component": "R6", "pin_number": "1" },
+        { "component": "R7", "pin_number": "1" },
+        { "component": "U2", "pin_number": "16" },
+        { "component": "J7", "pin_number": "2" },
+        { "component": "C3", "pin_number": "1" },
+        { "component": "C6", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "AVCC",
+      "power": true,
+      "connections": [
+        { "component": "FB1", "pin_number": "2" },
+        { "component": "PWR3", "pin_number": "1" },
+        { "component": "U1", "pin_number": "20" },
+        { "component": "C4", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "AREF",
+      "connections": [
+        { "component": "U1", "pin_number": "21" },
+        { "component": "C5", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "GND",
+      "power": true,
+      "connections": [
+        { "component": "J1", "pin_number": "2" },
+        { "component": "J1", "pin_number": "3" },
+        { "component": "D1", "pin_number": "2" },
+        { "component": "D2", "pin_number": "2" },
+        { "component": "PWR4", "pin_number": "1" },
+        { "component": "C1", "pin_number": "2" },
+        { "component": "C2", "pin_number": "2" },
+        { "component": "U1", "pin_number": "8" },
+        { "component": "U1", "pin_number": "22" },
+        { "component": "U2", "pin_number": "15" },
+        { "component": "Q1", "pin_number": "3" },
+        { "component": "Q2", "pin_number": "3" },
+        { "component": "J4", "pin_number": "1" },
+        { "component": "J5", "pin_number": "1" },
+        { "component": "J6", "pin_number": "1" },
+        { "component": "J7", "pin_number": "6" },
+        { "component": "J8", "pin_number": "1" },
+        { "component": "TH1", "pin_number": "2" },
+        { "component": "TH2", "pin_number": "2" },
+        { "component": "D5", "pin_number": "1" },
+        { "component": "C3", "pin_number": "2" },
+        { "component": "C4", "pin_number": "2" },
+        { "component": "C5", "pin_number": "2" },
+        { "component": "C6", "pin_number": "2" },
+        { "component": "C9", "pin_number": "2" },
+        { "component": "C10", "pin_number": "2" },
+        { "component": "C11", "pin_number": "2" },
+        { "component": "C12", "pin_number": "2" },
+        { "component": "C14", "pin_number": "2" },
+        { "component": "C15", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "RESET",
+      "connections": [
+        { "component": "U1", "pin_number": "1" },
+        { "component": "R1", "pin_number": "2" },
+        { "component": "J7", "pin_number": "5" },
+        { "component": "C13", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "XTAL1",
+      "connections": [
+        { "component": "U1", "pin_number": "9" },
+        { "component": "Y1", "pin_number": "1" },
+        { "component": "C14", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "XTAL2",
+      "connections": [
+        { "component": "U1", "pin_number": "10" },
+        { "component": "Y1", "pin_number": "2" },
+        { "component": "C15", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "THERM0_ADC",
+      "connections": [
+        { "component": "U1", "pin_number": "23" },
+        { "component": "R2", "pin_number": "2" },
+        { "component": "TH1", "pin_number": "1" },
+        { "component": "C11", "pin_number": "1" },
+        { "component": "J4", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "THERM1_ADC",
+      "connections": [
+        { "component": "U1", "pin_number": "24" },
+        { "component": "R3", "pin_number": "2" },
+        { "component": "TH2", "pin_number": "1" },
+        { "component": "C12", "pin_number": "1" },
+        { "component": "J5", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "FAN0_PWM",
+      "connections": [
+        { "component": "U1", "pin_number": "15" },
+        { "component": "R4", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "FAN1_PWM",
+      "connections": [
+        { "component": "U1", "pin_number": "16" },
+        { "component": "R5", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "FAN0_GATE",
+      "connections": [
+        { "component": "R4", "pin_number": "2" },
+        { "component": "R6", "pin_number": "2" },
+        { "component": "Q1", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "FAN1_GATE",
+      "connections": [
+        { "component": "R5", "pin_number": "2" },
+        { "component": "R7", "pin_number": "2" },
+        { "component": "Q2", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "FAN0_LOW",
+      "connections": [
+        { "component": "J2", "pin_number": "1" },
+        { "component": "Q1", "pin_number": "2" },
+        { "component": "D3", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "FAN1_LOW",
+      "connections": [
+        { "component": "J3", "pin_number": "1" },
+        { "component": "Q2", "pin_number": "2" },
+        { "component": "D4", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "MCU_TX",
+      "connections": [
+        { "component": "U1", "pin_number": "3" },
+        { "component": "U2", "pin_number": "11" },
+        { "component": "J8", "pin_number": "5" }
+      ]
+    },
+    {
+      "name": "MCU_RX",
+      "connections": [
+        { "component": "U1", "pin_number": "2" },
+        { "component": "U2", "pin_number": "12" },
+        { "component": "J8", "pin_number": "4" }
+      ]
+    },
+    {
+      "name": "RS232_TX_TO_PC_RX",
+      "connections": [
+        { "component": "U2", "pin_number": "14" },
+        { "component": "J6", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "RS232_RX_FROM_PC_TX",
+      "connections": [
+        { "component": "U2", "pin_number": "13" },
+        { "component": "J6", "pin_number": "3" }
+      ]
+    },
+    {
+      "name": "MAX_C1P",
+      "connections": [
+        { "component": "U2", "pin_number": "1" },
+        { "component": "C7", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "MAX_C1N",
+      "connections": [
+        { "component": "U2", "pin_number": "3" },
+        { "component": "C7", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "MAX_C2P",
+      "connections": [
+        { "component": "U2", "pin_number": "4" },
+        { "component": "C8", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "MAX_C2N",
+      "connections": [
+        { "component": "U2", "pin_number": "5" },
+        { "component": "C8", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "MAX_VPLUS",
+      "connections": [
+        { "component": "U2", "pin_number": "2" },
+        { "component": "C9", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "MAX_VMINUS",
+      "connections": [
+        { "component": "U2", "pin_number": "6" },
+        { "component": "C10", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "MISO",
+      "connections": [
+        { "component": "U1", "pin_number": "18" },
+        { "component": "J7", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "MOSI",
+      "connections": [
+        { "component": "U1", "pin_number": "17" },
+        { "component": "J7", "pin_number": "4" }
+      ]
+    },
+    {
+      "name": "SCK_STATUS_LED",
+      "connections": [
+        { "component": "U1", "pin_number": "19" },
+        { "component": "J7", "pin_number": "3" },
+        { "component": "R8", "pin_number": "1" }
+      ]
+    },
+    {
+      "name": "STATUS_LED_A",
+      "connections": [
+        { "component": "R8", "pin_number": "2" },
+        { "component": "D5", "pin_number": "2" }
+      ]
+    },
+    {
+      "name": "FTDI_DTR",
+      "connections": [
+        { "component": "J8", "pin_number": "6" },
+        { "component": "C13", "pin_number": "1" }
+      ]
+    }
+  ],
+  "no_connects": [
+    { "component": "J2", "pin_number": "3" },
+    { "component": "J3", "pin_number": "3" },
+    { "component": "J8", "pin_number": "2" },
+    { "component": "J8", "pin_number": "3" },
+    { "component": "U1", "pin_number": "4" },
+    { "component": "U1", "pin_number": "5" },
+    { "component": "U1", "pin_number": "6" },
+    { "component": "U1", "pin_number": "11" },
+    { "component": "U1", "pin_number": "12" },
+    { "component": "U1", "pin_number": "13" },
+    { "component": "U1", "pin_number": "14" },
+    { "component": "U1", "pin_number": "25" },
+    { "component": "U1", "pin_number": "26" },
+    { "component": "U1", "pin_number": "27" },
+    { "component": "U1", "pin_number": "28" },
+    { "component": "U2", "pin_number": "7" },
+    { "component": "U2", "pin_number": "8" },
+    { "component": "U2", "pin_number": "9" },
+    { "component": "U2", "pin_number": "10" }
+  ]
+}

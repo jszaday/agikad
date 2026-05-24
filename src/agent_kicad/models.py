@@ -77,6 +77,7 @@ class ConnectionSpec:
     components: list[ComponentSpec]
     nets: list[NetSpec]
     sheets: list[SheetSpec] = field(default_factory=list)
+    no_connects: list[PinRef] = field(default_factory=list)
 
 
 @dataclass(frozen=True)
@@ -123,6 +124,7 @@ class CircuitGraph:
     components: list[ComponentSpec]
     nets: list[ResolvedNet]
     sheets: list[SheetSpec]
+    no_connects: list[ResolvedPin] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)

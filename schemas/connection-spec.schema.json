@@ -124,6 +124,20 @@
         },
         "additionalProperties": false
       }
+    },
+    "no_connects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["component"],
+        "properties": {
+          "component": { "type": "string" },
+          "pin_number": { "type": "string" },
+          "pin_name": { "type": "string" },
+          "unit": { "type": "integer", "minimum": 1 }
+        },
+        "additionalProperties": false
+      }
     }
   },
   "additionalProperties": false

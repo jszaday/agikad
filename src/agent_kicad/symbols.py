@@ -68,15 +68,16 @@ def read_symbol_library(path: Path) -> list[SymbolInfo]:
     ):
         raise ValueError(f"{path} is not a KiCad symbol library")
     library_name = path.stem
+    symbol_exprs = _symbol_exprs(parsed[0])
     symbols: list[SymbolInfo] = []
-    for expr in children(parsed[0], "symbol"):
-        if len(expr) < 2 or not isinstance(expr[1], str):
-            continue
-        name = expr[1]
+    for name, expr in symbol_exprs.items():
         if "_" in name and name.rsplit("_", 2)[-1].isdigit():
             continue
-        pins = _symbol_pins(expr)
-        reference = _property_value(expr, "Reference")
+        resolved = _resolve_symbol_expr(expr, symbol_exprs)
+        pins = _symbol_pins(resolved)
+        reference = _property_value(expr, "Reference") or _property_value(
+            resolved, "Reference"
+        )
         symbols.append(
             SymbolInfo(
                 lib_id=f"{library_name}:{name}",
@@ -88,6 +89,38 @@ def read_symbol_library(path: Path) -> list[SymbolInfo]:
             )
         )
     return symbols
+
+
+def _symbol_exprs(root: list[SExpr]) -> dict[str, list[SExpr]]:
+    exprs: dict[str, list[SExpr]] = {}
+    for expr in children(root, "symbol"):
+        if len(expr) > 1 and isinstance(expr[1], str):
+            exprs[expr[1]] = expr
+    return exprs
+
+
+def _resolve_symbol_expr(
+    expr: list[SExpr],
+    symbol_exprs: dict[str, list[SExpr]],
+    seen: set[str] | None = None,
+) -> list[SExpr]:
+    seen = seen or set()
+    parent_name = _extends_name(expr)
+    if parent_name is None:
+        return expr
+    if parent_name in seen or parent_name not in symbol_exprs:
+        return expr
+    parent = _resolve_symbol_expr(
+        symbol_exprs[parent_name], symbol_exprs, seen | {parent_name}
+    )
+    return [*parent, *expr[2:]]
+
+
+def _extends_name(symbol: list[SExpr]) -> str | None:
+    child = first_child(symbol, "extends")
+    if child and len(child) > 1 and isinstance(child[1], str):
+        return child[1]
+    return None
 
 
 def _symbol_pins(symbol: list[SExpr]) -> list[SymbolPin]:

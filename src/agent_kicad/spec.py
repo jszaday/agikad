@@ -36,6 +36,7 @@ def parse_spec(data: dict[str, Any]) -> ConnectionSpec:
         components=[_component(c) for c in data.get("components", [])],
         nets=[_net(n) for n in data.get("nets", [])],
         sheets=[_sheet(s) for s in data.get("sheets", [])],
+        no_connects=[PinRef(**pin) for pin in data.get("no_connects", [])],
     )
 
 
@@ -58,6 +59,12 @@ def validate_shape(data: dict[str, Any]) -> list[str]:
     else:
         for i, net in enumerate(nets):
             _validate_net_shape(net, i, errors)
+    no_connects = data.get("no_connects", [])
+    if no_connects and not isinstance(no_connects, list):
+        errors.append("no_connects must be an array")
+    elif isinstance(no_connects, list):
+        for i, conn in enumerate(no_connects):
+            _validate_pin_ref_shape(conn, f"no_connects[{i}]", errors)
     return errors
 
 
@@ -93,13 +100,17 @@ def _validate_net_shape(net: Any, i: int, errors: list[str]) -> None:
         errors.append(f"nets[{i}].connections must contain at least two pins")
         return
     for j, conn in enumerate(connections):
-        if not isinstance(conn, dict):
-            errors.append(f"nets[{i}].connections[{j}] must be an object")
-            continue
-        if not conn.get("component"):
-            errors.append(f"nets[{i}].connections[{j}].component is required")
-        if not conn.get("pin_number") and not conn.get("pin_name"):
-            errors.append(f"nets[{i}].connections[{j}] requires pin_number or pin_name")
+        _validate_pin_ref_shape(conn, f"nets[{i}].connections[{j}]", errors)
+
+
+def _validate_pin_ref_shape(conn: Any, path: str, errors: list[str]) -> None:
+    if not isinstance(conn, dict):
+        errors.append(f"{path} must be an object")
+        return
+    if not conn.get("component"):
+        errors.append(f"{path}.component is required")
+    if not conn.get("pin_number") and not conn.get("pin_name"):
+        errors.append(f"{path} requires pin_number or pin_name")
 
 
 def _component(data: dict[str, Any]) -> ComponentSpec:
