@@ -6,6 +6,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+from .emitters.kicad_pcb import emit_kicad_pcb_project
 from .emitters.kicad_sch import emit_kicad_schematic_project
 from .emitters.skidl import emit_skidl_script, run_skidl_script
 from .footprints import index_footprints, list_footprint_libraries, search_footprints
@@ -49,6 +50,11 @@ def main(argv: list[str] | None = None) -> int:
     emit_kicad.add_argument("spec", type=Path)
     emit_kicad.add_argument("--out-dir", type=Path, required=True)
 
+    emit_pcb = sub.add_parser("emit-kicad-pcb")
+    emit_pcb.add_argument("spec", type=Path)
+    emit_pcb.add_argument("--constraints", type=Path, required=True)
+    emit_pcb.add_argument("--out-dir", type=Path, required=True)
+
     inspect = sub.add_parser("inspect-symbol")
     inspect.add_argument("lib_id")
 
@@ -85,6 +91,8 @@ def main(argv: list[str] | None = None) -> int:
         )
     if args.command == "emit-kicad-schematic":
         return _emit_kicad_schematic(args.spec, args.out_dir)
+    if args.command == "emit-kicad-pcb":
+        return _emit_kicad_pcb(args.spec, args.constraints, args.out_dir)
     if args.command == "inspect-symbol":
         return _inspect_symbol(args.lib_id)
     if args.command == "list-symbol-libraries":
@@ -208,6 +216,36 @@ def _emit_kicad_schematic(path: Path, out_dir: Path) -> int:
     )
     print(str(project_path))
     print(str(schematic_path))
+    return 0
+
+
+def _emit_kicad_pcb(path: Path, constraints: Path, out_dir: Path) -> int:
+    errors, graph = _validate_and_graph(path)
+    if errors:
+        for error in errors:
+            print(error, file=sys.stderr)
+        return 1
+    assert graph is not None
+    env = discover_kicad()
+    if env.footprints_dir is None:
+        print("KiCad footprint directory was not found", file=sys.stderr)
+        return 1
+    if env.python is None:
+        print("KiCad Python with pcbnew was not found", file=sys.stderr)
+        return 1
+    try:
+        project_path, board_path = emit_kicad_pcb_project(
+            graph,
+            constraints_path=constraints,
+            out_dir=out_dir,
+            footprints_dir=env.footprints_dir,
+            kicad_python=env.python,
+        )
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    print(str(project_path))
+    print(str(board_path))
     return 0
 
 

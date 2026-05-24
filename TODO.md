@@ -20,3 +20,24 @@ Initial scope:
 - [ ] Add golden connectivity tests comparing source graph to KiCad-exported netlist.
 
 The SKiDL schematic emitter is a quick prototype path. This direct backend should become the durable editable-KiCad output path.
+
+## Direct KiCad PCB emitter
+
+Status: initial placed, net-aware `.kicad_pcb` backend exists. It emits board outline, footprints, component placement, pad net assignment, no-connect parity nets, and net classes, but does not route copper yet.
+
+Physical constraint scope:
+
+- [ ] Add a formal PCB constraint schema for board outline, stackup, net classes, placement regions, keepouts, and routing intent.
+- [ ] Add semantic validation for PCB constraints, including unknown component ids, unknown net names, invalid layer counts, missing footprints, and duplicate/conflicting placements.
+- [ ] Support decoupling-capacitor constraints that assign each capacitor to a parent component power pin and ground pin.
+- [ ] Place assigned capacitors as close as possible to the assigned pin to minimize impedance between the capacitor and pin.
+- [ ] Sort same-parent decoupling capacitors from smallest to largest capacitance before placement.
+- [ ] Parse common capacitance units (`uF`, `µF`, `nF`, `pF`, etc.) and normalize to nF for placement calculations.
+- [ ] Prefer capacitor connections with as few vias as possible, ideally no vias on the capacitor-to-pin current loop.
+- [ ] Support oscillator/crystal placement constraints tied to parent component pins.
+- [ ] Place oscillators/crystals as close as possible to their parent pins and avoid vias where practical.
+- [ ] Support differential-pair constraints with matched length, controlled spacing, and target impedance metadata.
+- [ ] Treat impedance-controlled differential pairs as requiring 4+ layer stackups so the router can assume an uninterrupted ground-plane return path.
+- [ ] Run impedance calculations at 1 GHz for constraints that request controlled impedance.
+- [ ] Add router integration or a deterministic routing stage after placement; current DRC unconnected-items reports are expected until this exists.
+- [ ] Add a generated-board fixture for `examples/dual_p3_thermal_controller.json` that asserts zero schematic parity issues and zero non-routing DRC violations when KiCad CLI is available.

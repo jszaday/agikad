@@ -1,0 +1,122 @@
+{
+  "version": "0.1",
+  "pcb": {
+    "board": {
+      "width_mm": 180,
+      "height_mm": 120,
+      "layers": 2,
+      "margin_mm": 6
+    },
+    "net_classes": [
+      {
+        "name": "fan_power",
+        "nets": ["+12V_RAW", "+12V_FUSED", "FAN0_LOW", "FAN1_LOW", "GND"],
+        "track_width_mm": 1.2,
+        "clearance_mm": 0.3,
+        "via_diameter_mm": 1.2,
+        "via_drill_mm": 0.6
+      },
+      {
+        "name": "logic_power",
+        "nets": ["+5V_RAW", "+5V", "AVCC"],
+        "track_width_mm": 0.6,
+        "clearance_mm": 0.25,
+        "via_diameter_mm": 0.8,
+        "via_drill_mm": 0.4
+      },
+      {
+        "name": "logic",
+        "track_width_mm": 0.25,
+        "clearance_mm": 0.2,
+        "via_diameter_mm": 0.7,
+        "via_drill_mm": 0.35
+      }
+    ],
+    "placements": [
+      { "component": "J1", "x_mm": 12, "y_mm": 18, "rotation": 90 },
+      { "component": "F1", "x_mm": 34, "y_mm": 12, "rotation": 0 },
+      { "component": "F2", "x_mm": 34, "y_mm": 34, "rotation": 0 },
+      { "component": "D1", "x_mm": 64, "y_mm": 12, "rotation": 0 },
+      { "component": "D2", "x_mm": 64, "y_mm": 34, "rotation": 0 },
+      { "component": "C1", "x_mm": 86, "y_mm": 12, "rotation": 0 },
+      { "component": "C2", "x_mm": 86, "y_mm": 34, "rotation": 0 },
+      { "component": "U1", "x_mm": 76, "y_mm": 60, "rotation": 0 },
+      { "component": "FB1", "x_mm": 94, "y_mm": 62, "rotation": 0 },
+      { "component": "Y1", "x_mm": 58, "y_mm": 54, "rotation": 90 },
+      { "component": "U2", "x_mm": 132, "y_mm": 76, "rotation": 0 },
+      { "component": "Q1", "x_mm": 122, "y_mm": 24, "rotation": 180 },
+      { "component": "Q2", "x_mm": 158, "y_mm": 24, "rotation": 180 },
+      { "component": "J2", "x_mm": 122, "y_mm": 8, "rotation": 180 },
+      { "component": "J3", "x_mm": 158, "y_mm": 8, "rotation": 180 },
+      { "component": "J4", "x_mm": 18, "y_mm": 102, "rotation": 0 },
+      { "component": "J5", "x_mm": 42, "y_mm": 102, "rotation": 0 },
+      { "component": "J6", "x_mm": 170, "y_mm": 92, "rotation": 90 },
+      { "component": "J7", "x_mm": 82, "y_mm": 104, "rotation": 0 },
+      { "component": "J8", "x_mm": 112, "y_mm": 100, "rotation": 0 },
+      { "component": "R1", "x_mm": 48, "y_mm": 74, "rotation": 90 },
+      { "component": "R2", "x_mm": 22, "y_mm": 88, "rotation": 0 },
+      { "component": "R3", "x_mm": 46, "y_mm": 88, "rotation": 0 },
+      { "component": "R4", "x_mm": 112, "y_mm": 46, "rotation": 90 },
+      { "component": "R5", "x_mm": 148, "y_mm": 46, "rotation": 90 },
+      { "component": "R6", "x_mm": 120, "y_mm": 46, "rotation": 90 },
+      { "component": "R7", "x_mm": 156, "y_mm": 46, "rotation": 90 },
+      { "component": "R8", "x_mm": 24, "y_mm": 56, "rotation": 0 },
+      { "component": "D3", "x_mm": 106, "y_mm": 32, "rotation": 90 },
+      { "component": "D4", "x_mm": 142, "y_mm": 32, "rotation": 90 },
+      { "component": "D5", "x_mm": 18, "y_mm": 56, "rotation": 0 },
+      { "component": "C3", "x_mm": 70, "y_mm": 52, "rotation": 0 },
+      { "component": "C4", "x_mm": 96, "y_mm": 54, "rotation": 0 },
+      { "component": "C5", "x_mm": 70, "y_mm": 84, "rotation": 0 },
+      { "component": "C6", "x_mm": 122, "y_mm": 64, "rotation": 0 },
+      { "component": "C7", "x_mm": 142, "y_mm": 64, "rotation": 0 },
+      { "component": "C8", "x_mm": 122, "y_mm": 88, "rotation": 0 },
+      { "component": "C9", "x_mm": 142, "y_mm": 88, "rotation": 0 },
+      { "component": "C10", "x_mm": 154, "y_mm": 76, "rotation": 0 },
+      { "component": "C11", "x_mm": 22, "y_mm": 82, "rotation": 0 },
+      { "component": "C12", "x_mm": 46, "y_mm": 82, "rotation": 0 },
+      { "component": "C13", "x_mm": 96, "y_mm": 88, "rotation": 0 },
+      { "component": "C14", "x_mm": 50, "y_mm": 42, "rotation": 0 },
+      { "component": "C15", "x_mm": 52, "y_mm": 64, "rotation": 0 }
+    ],
+    "decoupling": [
+      {
+        "capacitor": "C3",
+        "parent": "U1",
+        "power_pin": "7",
+        "ground_pin": "8",
+        "max_distance_mm": 5,
+        "prefer_no_vias": true
+      },
+      {
+        "capacitor": "C4",
+        "parent": "U1",
+        "power_pin": "20",
+        "ground_pin": "22",
+        "max_distance_mm": 7,
+        "prefer_no_vias": true
+      },
+      {
+        "capacitor": "C10",
+        "parent": "U2",
+        "power_pin": "16",
+        "ground_pin": "15",
+        "max_distance_mm": 5,
+        "prefer_no_vias": true
+      }
+    ],
+    "oscillators": [
+      {
+        "component": "Y1",
+        "parent": "U1",
+        "pins": ["9", "10"],
+        "max_distance_mm": 10,
+        "prefer_no_vias": true
+      }
+    ],
+    "notes": [
+      "Connector placements are edge-biased for serviceability.",
+      "Fan current nets are assigned a wider net class before routing.",
+      "Thermistor connectors are kept away from the fan power section."
+    ]
+  }
+}

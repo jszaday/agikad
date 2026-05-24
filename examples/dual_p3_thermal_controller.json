@@ -14,12 +14,14 @@
     {
       "id": "F1",
       "lib_id": "Device:Polyfuse",
-      "value": "1.5A"
+      "value": "1.5A",
+      "footprint": "Fuse:Fuse_Bourns_MF-RHT1300"
     },
     {
       "id": "F2",
       "lib_id": "Device:Polyfuse",
-      "value": "500mA"
+      "value": "500mA",
+      "footprint": "Fuse:Fuse_Bourns_MF-RHT050"
     },
     {
       "id": "D1",
@@ -82,7 +84,8 @@
     {
       "id": "FB1",
       "lib_id": "Device:FerriteBead",
-      "value": "10uH"
+      "value": "10uH",
+      "footprint": "Inductor_THT:L_Axial_L11.0mm_D4.5mm_P15.24mm_Horizontal_Fastron_MECC"
     },
     {
       "id": "Y1",

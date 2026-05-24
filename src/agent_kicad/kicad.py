@@ -12,6 +12,7 @@ DEFAULT_KICAD_APP = Path("/Applications/KiCad/KiCad.app")
 @dataclass(frozen=True)
 class KiCadEnvironment:
     cli: Path | None
+    python: Path | None
     version: str | None
     shared_support: Path | None
     symbols_dir: Path | None
@@ -20,6 +21,7 @@ class KiCadEnvironment:
 
 def discover_kicad(app_path: Path = DEFAULT_KICAD_APP) -> KiCadEnvironment:
     cli = _find_cli(app_path)
+    python = _find_python(app_path)
     version = _run_version(cli) if cli else None
     shared = app_path / "Contents" / "SharedSupport"
     if not shared.exists():
@@ -28,6 +30,7 @@ def discover_kicad(app_path: Path = DEFAULT_KICAD_APP) -> KiCadEnvironment:
     footprints = shared / "footprints" if shared else None
     return KiCadEnvironment(
         cli=cli,
+        python=python,
         version=version,
         shared_support=shared,
         symbols_dir=symbols if symbols and symbols.exists() else None,
@@ -57,6 +60,20 @@ def _find_cli(app_path: Path) -> Path | None:
         return bundled
     found = shutil.which("kicad-cli")
     return Path(found) if found else None
+
+
+def _find_python(app_path: Path) -> Path | None:
+    bundled = (
+        app_path
+        / "Contents"
+        / "Frameworks"
+        / "Python.framework"
+        / "Versions"
+        / "3.9"
+        / "bin"
+        / "python3"
+    )
+    return bundled if bundled.exists() else None
 
 
 def _run_version(cli: Path) -> str | None:

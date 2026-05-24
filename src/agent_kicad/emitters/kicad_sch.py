@@ -233,13 +233,9 @@ def _load_symbol_bundles(
         exprs = _symbol_exprs(root)
         expr = _resolve_symbol_expr(exprs[name], exprs)
         base_name = _base_symbol_name(name, exprs)
-        derived_text = (
-            _extract_symbol_block(text, name) if name != base_name else None
-        )
+        derived_text = _extract_symbol_block(text, name) if name != base_name else None
         embedded_texts = [
-            _symbol_block_for_lib_symbols(
-                text, base_name, lib_id, name, derived_text
-            )
+            _symbol_block_for_lib_symbols(text, base_name, lib_id, name, derived_text)
         ]
         bundles[lib_id] = SymbolBundle(
             lib_id=lib_id,

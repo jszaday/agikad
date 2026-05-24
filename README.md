@@ -24,6 +24,7 @@ python -m agent_kicad.cli normalize examples/divider_demo.json --output build/di
 python -m agent_kicad.cli emit-skidl examples/divider_demo.json --output build/divider_demo.py --netlist-output divider_demo.net --run
 python -m agent_kicad.cli emit-skidl-schematic examples/divider_demo.json --output build/divider_demo_schematic.py --schematic-dir build/schematic --run
 python -m agent_kicad.cli emit-kicad-schematic examples/divider_demo.json --out-dir build/direct
+python -m agent_kicad.cli emit-kicad-pcb examples/dual_p3_thermal_controller.json --constraints examples/dual_p3_thermal_controller.pcb.json --out-dir build/dual_p3_pcb
 ```
 
 If running from a fresh checkout without installing the package:
@@ -84,6 +85,17 @@ kicad-cli sch export netlist build/direct/divider_demo.kicad_sch --format kicads
 
 The first version is labels-only: it places symbols on a 2.54 mm grid and attaches global labels directly to connected pins. This prioritizes deterministic connectivity and KiCad validation over human-readable wiring.
 
+## Direct KiCad PCB Emitter
+
+The PCB emitter writes an initial placed, net-aware `.kicad_pcb` from a validated connection spec plus a companion physical constraint file:
+
+```sh
+agent-kicad emit-kicad-pcb examples/dual_p3_thermal_controller.json --constraints examples/dual_p3_thermal_controller.pcb.json --out-dir build/dual_p3_pcb
+kicad-cli pcb drc build/dual_p3_pcb/dual_p3_thermal_controller.kicad_pcb --schematic-parity --format json --output build/dual_p3_pcb/dual_p3_thermal_controller-drc.json
+```
+
+This first PCB backend handles board outline, footprint import, component placement, pad net assignment, no-connect parity nets, and net classes. It intentionally does not route copper yet, so DRC will still report unrouted ratsnest items until a routing stage is added.
+
 ## Current Boundary
 
-The code validates and normalizes a well-formed prompt output, can emit SKiDL scripts for netlist and prototype schematic generation, and has an initial direct `.kicad_sch` backend. Remaining direct-emitter hardening is tracked in `TODO.md`.
+The code validates and normalizes a well-formed prompt output, can emit SKiDL scripts for netlist and prototype schematic generation, and has initial direct `.kicad_sch` and placed `.kicad_pcb` backends. Remaining direct-emitter hardening is tracked in `TODO.md`.
