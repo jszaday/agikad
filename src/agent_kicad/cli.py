@@ -37,6 +37,13 @@ def main(argv: list[str] | None = None) -> int:
     emit_skidl.add_argument("--netlist-output", type=Path)
     emit_skidl.add_argument("--run", action="store_true")
 
+    emit_schematic = sub.add_parser("emit-skidl-schematic")
+    emit_schematic.add_argument("spec", type=Path)
+    emit_schematic.add_argument("--output", "-o", type=Path, required=True)
+    emit_schematic.add_argument("--schematic-dir", type=Path, required=True)
+    emit_schematic.add_argument("--top-name")
+    emit_schematic.add_argument("--run", action="store_true")
+
     inspect = sub.add_parser("inspect-symbol")
     inspect.add_argument("lib_id")
 
@@ -67,6 +74,10 @@ def main(argv: list[str] | None = None) -> int:
         return _normalize(args.spec, args.output)
     if args.command == "emit-skidl":
         return _emit_skidl(args.spec, args.output, args.netlist_output, args.run)
+    if args.command == "emit-skidl-schematic":
+        return _emit_skidl_schematic(
+            args.spec, args.output, args.schematic_dir, args.top_name, args.run
+        )
     if args.command == "inspect-symbol":
         return _inspect_symbol(args.lib_id)
     if args.command == "list-symbol-libraries":
@@ -127,6 +138,39 @@ def _emit_skidl(
         graph,
         output,
         netlist_output=netlist_output,
+        symbols_dir=env.symbols_dir,
+        footprints_dir=env.footprints_dir,
+    )
+    print(str(output))
+    if not run:
+        return 0
+    proc = run_skidl_script(output)
+    if proc.stdout:
+        print(proc.stdout, end="")
+    if proc.stderr:
+        print(proc.stderr, file=sys.stderr, end="")
+    return proc.returncode
+
+
+def _emit_skidl_schematic(
+    path: Path,
+    output: Path,
+    schematic_dir: Path,
+    top_name: str | None,
+    run: bool,
+) -> int:
+    errors, graph = _validate_and_graph(path)
+    if errors:
+        for error in errors:
+            print(error, file=sys.stderr)
+        return 1
+    assert graph is not None
+    env = discover_kicad()
+    emit_skidl_script(
+        graph,
+        output,
+        schematic_dir=schematic_dir,
+        schematic_top_name=top_name or graph.project.name,
         symbols_dir=env.symbols_dir,
         footprints_dir=env.footprints_dir,
     )

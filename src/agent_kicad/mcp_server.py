@@ -66,6 +66,27 @@ def main() -> None:
         }
 
     @mcp.tool()
+    def emit_skidl_schematic_script(
+        spec_json: str, schematic_dir: str, top_name: str = ""
+    ) -> dict[str, object]:
+        """Render a SKiDL Python script that generates a KiCad schematic."""
+        errors, graph = _validate_json(spec_json)
+        if errors:
+            return {"ok": False, "errors": errors}
+        assert graph is not None
+        env = discover_kicad()
+        return {
+            "ok": True,
+            "script": render_skidl_script(
+                graph,
+                schematic_dir=Path(schematic_dir),
+                schematic_top_name=top_name or graph.project.name,
+                symbols_dir=env.symbols_dir,
+                footprints_dir=env.footprints_dir,
+            ),
+        }
+
+    @mcp.tool()
     def write_skidl_script(spec_json: str, output_path: str) -> dict[str, object]:
         """Write a SKiDL Python script to a local path."""
         errors, graph = _validate_json(spec_json)

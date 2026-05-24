@@ -13,14 +13,19 @@ def emit_skidl_script(
     graph: CircuitGraph,
     output: Path,
     netlist_output: Path | None = None,
+    schematic_dir: Path | None = None,
+    schematic_top_name: str | None = None,
     symbols_dir: Path | None = None,
     footprints_dir: Path | None = None,
 ) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
+    schematic_dir = schematic_dir.resolve() if schematic_dir is not None else None
     output.write_text(
         render_skidl_script(
             graph,
             netlist_output=netlist_output,
+            schematic_dir=schematic_dir,
+            schematic_top_name=schematic_top_name,
             symbols_dir=symbols_dir,
             footprints_dir=footprints_dir,
         ),
@@ -52,6 +57,8 @@ def run_skidl_script(script: Path) -> subprocess.CompletedProcess[str]:
 def render_skidl_script(
     graph: CircuitGraph,
     netlist_output: Path | None = None,
+    schematic_dir: Path | None = None,
+    schematic_top_name: str | None = None,
     symbols_dir: Path | None = None,
     footprints_dir: Path | None = None,
 ) -> str:
@@ -81,7 +88,7 @@ def render_skidl_script(
     lines.extend(
         [
             "",
-            "from skidl import ERC, KICAD9, Net, Part, generate_netlist, set_default_tool",
+            "from skidl import ERC, KICAD9, Net, Part, generate_netlist, generate_schematic, set_default_tool",
             "import skidl",
             "",
             "set_default_tool(KICAD9)",
@@ -125,7 +132,21 @@ def render_skidl_script(
             )
         lines.append("")
 
-    lines.extend(["ERC()", _generate_netlist_line(netlist_output), ""])
+    lines.append("ERC()")
+    if netlist_output is not None:
+        lines.append(_generate_netlist_line(netlist_output))
+    if schematic_dir is not None:
+        lines.append(
+            "generate_schematic("
+            f"filepath={_quote(str(schematic_dir))}, "
+            f"top_name={_quote(schematic_top_name or graph.project.name)}, "
+            f"title={_quote(graph.project.name)}, "
+            "flatness=1.0, auto_stub=True"
+            ")"
+        )
+    if netlist_output is None and schematic_dir is None:
+        lines.append("generate_netlist(tool=KICAD9)")
+    lines.append("")
     return "\n".join(lines)
 
 

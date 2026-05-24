@@ -22,6 +22,7 @@ python -m agent_kicad.cli search-footprints --query PinHeader_1x03 --library Con
 python -m agent_kicad.cli validate examples/divider_demo.json
 python -m agent_kicad.cli normalize examples/divider_demo.json --output build/divider_demo.graph.json
 python -m agent_kicad.cli emit-skidl examples/divider_demo.json --output build/divider_demo.py --netlist-output divider_demo.net --run
+python -m agent_kicad.cli emit-skidl-schematic examples/divider_demo.json --output build/divider_demo_schematic.py --schematic-dir build/schematic --run
 ```
 
 If running from a fresh checkout without installing the package:
@@ -49,6 +50,7 @@ Available tools:
 - `validate_connection_spec`: validate JSON against the contract and installed KiCad libraries
 - `normalize_connection_spec`: return the canonical graph as JSON
 - `emit_skidl_script`: render a SKiDL Python script from a validated connection spec
+- `emit_skidl_schematic_script`: render a SKiDL Python script that generates `.kicad_sch`
 - `write_skidl_script`: write a SKiDL Python script to a local path
 - `inspect_symbol`: inspect a symbol's resolved pins
 
@@ -61,10 +63,13 @@ The first emitter targets SKiDL because it gives a fast netlist-first path. It w
 ```sh
 pip install -e '.[skidl]'
 agent-kicad emit-skidl examples/divider_demo.json --output build/divider_demo.py --netlist-output divider_demo.net --run
+agent-kicad emit-skidl-schematic examples/divider_demo.json --output build/divider_demo_schematic.py --schematic-dir build/schematic --run
 ```
 
 The generated script points SKiDL at the KiCad app bundle's symbol and footprint libraries and keeps SKiDL cache/config files under the output directory.
 
+The schematic command is a prototype bridge, not the final editable-schematic backend. It uses SKiDL's `generate_schematic(auto_stub=True)` path, so KiCad can load/export the result, but ERC may still report layout-generator artifacts such as dangling labels, power-driver warnings, or library-copy mismatch warnings.
+
 ## Current Boundary
 
-The code validates and normalizes a well-formed prompt output and can emit a SKiDL netlist-generation script. It does not yet emit `.kicad_sch`. That is a deliberate boundary from `SPEC.md`: keep the agent-facing IR stable, prove symbol and pin resolution first, then add direct schematic generation behind the same graph.
+The code validates and normalizes a well-formed prompt output and can emit SKiDL scripts for netlist and prototype schematic generation. The durable direct `.kicad_sch` backend is tracked in `TODO.md`.
