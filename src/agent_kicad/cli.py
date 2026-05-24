@@ -12,6 +12,11 @@ from .emitters.skidl import emit_skidl_script, run_skidl_script
 from .footprints import index_footprints, list_footprint_libraries, search_footprints
 from .graph import build_graph, validate_semantics
 from .kicad import discover_kicad
+from .pcb_constraints import (
+    load_pcb_constraints,
+    validate_pcb_constraint_semantics,
+    validate_pcb_constraint_shape,
+)
 from .spec import load_spec, validate_shape
 from .symbols import (
     index_symbols_for_lib_ids,
@@ -226,6 +231,15 @@ def _emit_kicad_pcb(path: Path, constraints: Path, out_dir: Path) -> int:
             print(error, file=sys.stderr)
         return 1
     assert graph is not None
+    constraint_data = load_pcb_constraints(constraints)
+    errors = [
+        *validate_pcb_constraint_shape(constraint_data),
+        *validate_pcb_constraint_semantics(constraint_data, graph),
+    ]
+    if errors:
+        for error in errors:
+            print(error, file=sys.stderr)
+        return 1
     env = discover_kicad()
     if env.footprints_dir is None:
         print("KiCad footprint directory was not found", file=sys.stderr)

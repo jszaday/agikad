@@ -27,8 +27,12 @@ Status: initial placed, net-aware `.kicad_pcb` backend exists. It emits board ou
 
 Physical constraint scope:
 
-- [ ] Add a formal PCB constraint schema for board outline, stackup, net classes, placement regions, keepouts, and routing intent.
-- [ ] Add semantic validation for PCB constraints, including unknown component ids, unknown net names, invalid layer counts, missing footprints, and duplicate/conflicting placements.
+- [x] Add a formal PCB constraint schema for board outline, stackup, net classes, placement regions, keepouts, and routing intent.
+- [x] Add semantic validation for PCB constraints, including unknown component ids, unknown net names, invalid layer counts, missing footprints, and duplicate/conflicting placements.
+- [ ] Add a compact placement mode that reduces empty board space while preserving probe access and hand-assembly clearance.
+- [ ] Make oscillator placement footprint-aware enough to keep crystals physically tight to MCU XTAL pins without courtyard or silkscreen violations.
+- [x] Add constraint-driven silkscreen labels for connector pinouts, warnings, and design intent notes such as fail-safe fan behavior and high-current regions.
+- [ ] Add generated default silkscreen labels derived from connector pin metadata and high-level design intent.
 - [ ] Support decoupling-capacitor constraints that assign each capacitor to a parent component power pin and ground pin.
 - [ ] Place assigned capacitors as close as possible to the assigned pin to minimize impedance between the capacitor and pin.
 - [ ] Sort same-parent decoupling capacitors from smallest to largest capacitance before placement.

@@ -45,6 +45,7 @@ def _emit_board(
     net_by_name = _create_nets(board, graph, no_connect_net_names)
     _apply_netclasses(board, pcb.get("net_classes", []))
     _draw_outline(board, width, height)
+    _add_silkscreen_labels(board, pcb.get("silkscreen_labels", []))
 
     placements = _placements_by_component(pcb.get("placements", []))
     auto_index = 0
@@ -116,6 +117,20 @@ def _draw_outline(board: Any, width: float, height: float) -> None:
         line.SetStart(_v(*start))
         line.SetEnd(_v(*end))
         board.Add(line)
+
+
+def _add_silkscreen_labels(board: Any, labels: list[dict[str, Any]]) -> None:
+    layers = {"F.SilkS": pcbnew.F_SilkS, "B.SilkS": pcbnew.B_SilkS}
+    for label in labels:
+        text = pcbnew.PCB_TEXT(board)
+        text.SetText(label["text"])
+        text.SetLayer(layers.get(label.get("layer", "F.SilkS"), pcbnew.F_SilkS))
+        text.SetPosition(_v(float(label["x_mm"]), float(label["y_mm"])))
+        text.SetTextAngleDegrees(float(label.get("rotation", 0)))
+        size = pcbnew.FromMM(float(label.get("size_mm", 1)))
+        text.SetTextSize(pcbnew.VECTOR2I(size, size))
+        text.SetTextThickness(pcbnew.FromMM(0.15))
+        board.Add(text)
 
 
 def _placements_by_component(

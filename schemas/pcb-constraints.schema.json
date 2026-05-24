@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KiCadPcbConstraints",
+  "type": "object",
+  "required": ["version", "pcb"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string", "const": "0.1" },
+    "pcb": {
+      "type": "object",
+      "required": ["board"],
+      "properties": {
+        "board": {
+          "type": "object",
+          "required": ["width_mm", "height_mm"],
+          "properties": {
+            "width_mm": { "type": "number", "exclusiveMinimum": 0 },
+            "height_mm": { "type": "number", "exclusiveMinimum": 0 },
+            "layers": { "type": "integer", "enum": [2, 4, 6, 8], "default": 2 },
+            "margin_mm": { "type": "number", "minimum": 0, "default": 5 },
+            "placement_style": {
+              "type": "string",
+              "enum": ["compact", "serviceable", "spacious"],
+              "default": "serviceable"
+            }
+          },
+          "additionalProperties": false
+        },
+        "net_classes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "nets": {
+                "type": "array",
+                "items": { "type": "string" },
+                "uniqueItems": true
+              },
+              "track_width_mm": { "type": "number", "exclusiveMinimum": 0 },
+              "clearance_mm": { "type": "number", "minimum": 0 },
+              "via_diameter_mm": { "type": "number", "exclusiveMinimum": 0 },
+              "via_drill_mm": { "type": "number", "exclusiveMinimum": 0 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "placements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["component", "x_mm", "y_mm"],
+            "properties": {
+              "component": { "type": "string" },
+              "x_mm": { "type": "number" },
+              "y_mm": { "type": "number" },
+              "rotation": { "type": "number", "default": 0 },
+              "locked": { "type": "boolean", "default": false },
+              "intent": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "decoupling": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["capacitor", "parent", "power_pin", "ground_pin"],
+            "properties": {
+              "capacitor": { "type": "string" },
+              "parent": { "type": "string" },
+              "power_pin": { "type": "string" },
+              "ground_pin": { "type": "string" },
+              "max_distance_mm": { "type": "number", "exclusiveMinimum": 0 },
+              "prefer_no_vias": { "type": "boolean", "default": true }
+            },
+            "additionalProperties": false
+          }
+        },
+        "oscillators": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["component", "parent", "pins"],
+            "properties": {
+              "component": { "type": "string" },
+              "parent": { "type": "string" },
+              "pins": {
+                "type": "array",
+                "minItems": 2,
+                "items": { "type": "string" }
+              },
+              "max_distance_mm": { "type": "number", "exclusiveMinimum": 0 },
+              "prefer_no_vias": { "type": "boolean", "default": true }
+            },
+            "additionalProperties": false
+          }
+        },
+        "differential_pairs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "nets"],
+            "properties": {
+              "name": { "type": "string" },
+              "nets": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": { "type": "string" }
+              },
+              "target_impedance_ohm": { "type": "number", "exclusiveMinimum": 0 },
+              "spacing_mm": { "type": "number", "exclusiveMinimum": 0 },
+              "length_tolerance_mm": { "type": "number", "minimum": 0 },
+              "calculation_frequency_hz": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "default": 1000000000
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "silkscreen_labels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text", "x_mm", "y_mm"],
+            "properties": {
+              "text": { "type": "string" },
+              "x_mm": { "type": "number" },
+              "y_mm": { "type": "number" },
+              "rotation": { "type": "number", "default": 0 },
+              "size_mm": { "type": "number", "exclusiveMinimum": 0, "default": 1 },
+              "layer": { "type": "string", "enum": ["F.SilkS", "B.SilkS"], "default": "F.SilkS" },
+              "intent": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
