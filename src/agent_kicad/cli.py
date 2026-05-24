@@ -6,6 +6,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+from .emitters.kicad_sch import emit_kicad_schematic_project
 from .emitters.skidl import emit_skidl_script, run_skidl_script
 from .footprints import index_footprints, list_footprint_libraries, search_footprints
 from .graph import build_graph, validate_semantics
@@ -44,6 +45,10 @@ def main(argv: list[str] | None = None) -> int:
     emit_schematic.add_argument("--top-name")
     emit_schematic.add_argument("--run", action="store_true")
 
+    emit_kicad = sub.add_parser("emit-kicad-schematic")
+    emit_kicad.add_argument("spec", type=Path)
+    emit_kicad.add_argument("--out-dir", type=Path, required=True)
+
     inspect = sub.add_parser("inspect-symbol")
     inspect.add_argument("lib_id")
 
@@ -78,6 +83,8 @@ def main(argv: list[str] | None = None) -> int:
         return _emit_skidl_schematic(
             args.spec, args.output, args.schematic_dir, args.top_name, args.run
         )
+    if args.command == "emit-kicad-schematic":
+        return _emit_kicad_schematic(args.spec, args.out_dir)
     if args.command == "inspect-symbol":
         return _inspect_symbol(args.lib_id)
     if args.command == "list-symbol-libraries":
@@ -183,6 +190,25 @@ def _emit_skidl_schematic(
     if proc.stderr:
         print(proc.stderr, file=sys.stderr, end="")
     return proc.returncode
+
+
+def _emit_kicad_schematic(path: Path, out_dir: Path) -> int:
+    errors, graph = _validate_and_graph(path)
+    if errors:
+        for error in errors:
+            print(error, file=sys.stderr)
+        return 1
+    assert graph is not None
+    env = discover_kicad()
+    if env.symbols_dir is None:
+        print("KiCad symbol directory was not found", file=sys.stderr)
+        return 1
+    project_path, schematic_path = emit_kicad_schematic_project(
+        graph, out_dir=out_dir, symbols_dir=env.symbols_dir
+    )
+    print(str(project_path))
+    print(str(schematic_path))
+    return 0
 
 
 def _inspect_symbol(lib_id: str) -> int:

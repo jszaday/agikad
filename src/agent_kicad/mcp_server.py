@@ -4,6 +4,7 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
+from .emitters.kicad_sch import emit_kicad_schematic_project
 from .emitters.skidl import emit_skidl_script as write_skidl_file
 from .emitters.skidl import render_skidl_script
 from .footprints import (
@@ -101,6 +102,27 @@ def main() -> None:
             footprints_dir=env.footprints_dir,
         )
         return {"ok": True, "path": str(output)}
+
+    @mcp.tool()
+    def write_kicad_schematic_project(
+        spec_json: str, out_dir: str
+    ) -> dict[str, object]:
+        """Write a direct KiCad .kicad_pro/.kicad_sch project."""
+        errors, graph = _validate_json(spec_json)
+        if errors:
+            return {"ok": False, "errors": errors}
+        assert graph is not None
+        env = discover_kicad()
+        if env.symbols_dir is None:
+            return {"ok": False, "errors": ["KiCad symbol directory was not found"]}
+        project_path, schematic_path = emit_kicad_schematic_project(
+            graph, Path(out_dir), env.symbols_dir
+        )
+        return {
+            "ok": True,
+            "project_path": str(project_path),
+            "schematic_path": str(schematic_path),
+        }
 
     @mcp.tool()
     def inspect_symbol(lib_id: str) -> dict[str, object]:
