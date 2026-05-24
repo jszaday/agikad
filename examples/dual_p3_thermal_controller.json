@@ -9,7 +9,7 @@
       "id": "J1",
       "lib_id": "Connector_Generic:Conn_01x04",
       "value": "PC_Molex_Power",
-      "footprint": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical"
+      "footprint": "Connector_Molex:Molex_KK-254_AE-6410-04A_1x04_P2.54mm_Vertical"
     },
     {
       "id": "F1",
@@ -92,9 +92,9 @@
     },
     {
       "id": "U2",
-      "lib_id": "Interface_UART:MAX232",
+      "lib_id": "Interface_UART:MAX3232",
       "value": "MAX3232",
-      "footprint": "Package_DIP:DIP-16_W7.62mm_Socket"
+      "footprint": "Package_SO:SOIC-16W_7.5x10.3mm_P1.27mm"
     },
     {
       "id": "Q1",
@@ -207,7 +207,7 @@
     {
       "id": "R8",
       "lib_id": "Device:R",
-      "value": "1k",
+      "value": "330R",
       "footprint": "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
     },
     {
@@ -321,13 +321,13 @@
       "power": true,
       "connections": [
         { "component": "F1", "pin_number": "2" },
-        { "component": "D1", "pin_number": "1" },
+        { "component": "D1", "pin_number": "2" },
         { "component": "PWR1", "pin_number": "1" },
         { "component": "C1", "pin_number": "1" },
         { "component": "J2", "pin_number": "2" },
         { "component": "J3", "pin_number": "2" },
-        { "component": "D3", "pin_number": "1" },
-        { "component": "D4", "pin_number": "1" }
+        { "component": "D3", "pin_number": "2" },
+        { "component": "D4", "pin_number": "2" }
       ]
     },
     {
@@ -343,7 +343,7 @@
       "power": true,
       "connections": [
         { "component": "F2", "pin_number": "2" },
-        { "component": "D2", "pin_number": "1" },
+        { "component": "D2", "pin_number": "2" },
         { "component": "PWR2", "pin_number": "1" },
         { "component": "C2", "pin_number": "1" },
         { "component": "U1", "pin_number": "7" },
@@ -382,8 +382,8 @@
       "connections": [
         { "component": "J1", "pin_number": "2" },
         { "component": "J1", "pin_number": "3" },
-        { "component": "D1", "pin_number": "2" },
-        { "component": "D2", "pin_number": "2" },
+        { "component": "D1", "pin_number": "1" },
+        { "component": "D2", "pin_number": "1" },
         { "component": "PWR4", "pin_number": "1" },
         { "component": "C1", "pin_number": "2" },
         { "component": "C2", "pin_number": "2" },
@@ -492,7 +492,7 @@
       "connections": [
         { "component": "J2", "pin_number": "1" },
         { "component": "Q1", "pin_number": "2" },
-        { "component": "D3", "pin_number": "2" }
+        { "component": "D3", "pin_number": "1" }
       ]
     },
     {
@@ -500,7 +500,7 @@
       "connections": [
         { "component": "J3", "pin_number": "1" },
         { "component": "Q2", "pin_number": "2" },
-        { "component": "D4", "pin_number": "2" }
+        { "component": "D4", "pin_number": "1" }
       ]
     },
     {

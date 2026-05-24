@@ -107,8 +107,7 @@ Important inherited-symbol finding:
 - KiCad libraries use `(extends "...")` aliases heavily.
 - The symbol discovery layer resolves inherited symbols so aliases such as `MCU_Microchip_ATmega:ATmega328P-P`, `Interface_UART:MAX3232`, and `Transistor_FET:IRLZ44N` expose inherited pins correctly.
 - KiCad ERC is strict about schematic cache symbols matching the installed library. Flattening inherited alias symbols into cached `lib_symbols` can produce `lib_symbol_mismatch` warnings even when connectivity is correct.
-- For warning-clean examples, prefer a concrete non-inherited base symbol as `lib_id` and put the intended real part in `value`. Example: use `Interface_UART:MAX232` with value `MAX3232`, or `Transistor_FET:BUZ11` with value `IRLZ44N`, when the pinout/geometry is equivalent.
-- Long-term TODO: implement warning-clean inherited-symbol cache emission without needing base-symbol substitutions.
+- The emitter now correctly handles inherited symbols (`extends`): it flattens the base geometry but merges the child symbol's property values (Value, Datasheet, Description, etc.) on top. Inherited alias `lib_id`s such as `Interface_UART:MAX3232` and `Transistor_FET:IRLZ44N` can now be used directly without ERC `lib_symbol_mismatch` warnings.
 
 ## KiCad ERC Expectations
 
@@ -133,12 +132,12 @@ Found 0 violations
 
 Symbols verified or used:
 
-- `MCU_Microchip_ATmega:ATmega328P-P` resolves to DIP-28 ATmega pins but is inherited.
-- `MCU_Microchip_ATmega:ATmega48PV-10P` is a warning-clean base-symbol stand-in for ATmega328P-PU pin geometry in the example.
-- `Interface_UART:MAX3232` resolves inherited MAX232 pins but is inherited.
-- `Interface_UART:MAX232` is a warning-clean base-symbol stand-in for MAX3232 pin geometry.
-- `Transistor_FET:IRLZ44N` resolves inherited G/D/S pins but is inherited.
-- `Transistor_FET:BUZ11` is a warning-clean base-symbol stand-in for IRLZ44N pin geometry.
+- `Interface_UART:MAX3232` — use directly; emitter handles inherited symbol correctly.
+- `Interface_UART:MAX232` — base symbol for MAX3232; no longer needed as a workaround.
+- `MCU_Microchip_ATmega:ATmega48PV-10P` — use directly for ATmega328P-PU DIP-28 pin geometry (non-inherited base).
+- `MCU_Microchip_ATmega:ATmega328P-P` — inherited; can now be used directly.
+- `Transistor_FET:IRLZ44N` — inherited; can now be used directly.
+- `Transistor_FET:BUZ11` — base symbol for IRLZ44N; no longer needed as a workaround.
 - `Device:Thermistor_NTC`
 - `Device:Polyfuse`
 - `Device:Crystal`
@@ -175,7 +174,9 @@ Footprints verified or used:
 
 Molex note:
 
-- A quick bundled footprint search did not find an obvious legacy PC peripheral Molex connector footprint. The current example uses a generic 1x04 THT pin header symbol/footprint for the power inlet while preserving explicit net names (`+12VIN`, `+5VIN`, `GND`).
+- `Connector_Molex:Molex_KK-254_AE-6410-04A_1x04_P2.54mm_Vertical` — confirmed present; Berg/floppy-style 4-pin power connector, 2.54mm pitch. Used for the power inlet in the dual P3 example (low current budget fits easily within floppy connector ratings).
+- `Connector_Molex:Molex_KK-396_5273-04A_1x04_P3.96mm_Vertical` — confirmed present; 3.96mm pitch 1x4, classic large peripheral Molex (HDD/optical drive power).
+- `Connector_Molex:Molex_Mini-Fit_Jr_5566-04A_2x02_P4.20mm_Vertical` — confirmed present; ATX 4-pin CPU power connector (2x2, 4.20mm pitch). Not a peripheral power connector.
 
 ## Dual PIII Example
 
@@ -210,6 +211,4 @@ It models:
 - Improve direct emitter layout; current grid plus global labels is electrically valid but not human-optimized.
 - Support drawn wires or grouped local labels for more readable schematics.
 - Add hierarchy-aware emission for sheets and sheet pins.
-- Improve inherited alias cache generation so real alias `lib_id`s can be used warning-clean.
-- Add stronger footprint/symbol discovery flows for exact connector families, especially legacy Molex power connectors.
 - Add semantic lint rules on top of KiCad ERC, such as requiring `PWR_FLAG` on connector-fed power rails and checking no pin is both connected and no-connected.

@@ -232,9 +232,13 @@ def _load_symbol_bundles(
         root = parsed[0]
         exprs = _symbol_exprs(root)
         expr = _resolve_symbol_expr(exprs[name], exprs)
+        base_name = _base_symbol_name(name, exprs)
+        derived_text = (
+            _extract_symbol_block(text, name) if name != base_name else None
+        )
         embedded_texts = [
             _symbol_block_for_lib_symbols(
-                text, _base_symbol_name(name, exprs), lib_id, name
+                text, base_name, lib_id, name, derived_text
             )
         ]
         bundles[lib_id] = SymbolBundle(
@@ -248,7 +252,11 @@ def _load_symbol_bundles(
 
 
 def _symbol_block_for_lib_symbols(
-    text: str, symbol_name: str, lib_id: str | None, nested_name: str | None = None
+    text: str,
+    symbol_name: str,
+    lib_id: str | None,
+    nested_name: str | None = None,
+    derived_text: str | None = None,
 ) -> str:
     block = _extract_symbol_block(text, symbol_name)
     if lib_id is None:
@@ -265,6 +273,19 @@ def _symbol_block_for_lib_symbols(
             rf'\1"{nested_name}\2"',
             block,
         )
+    if derived_text:
+        # Merge child symbol's property values over the base's properties.
+        # KiCad resolves inherited symbols by keeping the base geometry but
+        # overriding properties from the child stub.
+        for prop_name, prop_value in re.findall(
+            r'\(property\s+"([^"]+)"\s+"([^"]*)"', derived_text
+        ):
+            block = re.sub(
+                rf'(\(property\s+"{re.escape(prop_name)}"\s+)"[^"]*"',
+                rf'\1"{prop_value}"',
+                block,
+                count=1,
+            )
     return block
 
 
